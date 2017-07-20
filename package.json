@@ -1,0 +1,72 @@
+{
+  "name": "express-inline-css-amp",
+  "version": "1.0.0",
+  "description": "Express inline css generator to AMP",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm run -s build",
+    "build": "babel src -d lib",
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eder/express-inline-css-amp.git"
+  },
+  "keywords": [
+    "inline",
+    "css",
+    "AMP",
+    "express",
+    "style",
+    "amp-custom"
+  ],
+  "author": "Eder Eduardo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eder/express-inline-css-amp/issues"
+  },
+  "homepage": "https://github.com/eder/express-inline-css-amp#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "uglifycss": "0.0.27"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^4.2.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "eslint-watch": "^3.1.2",
+    "jest": "^20.0.4",
+    "nodemon": "^1.11.0",
+    "regenerator-runtime": "^0.10.5"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "plugins": [
+      "import",
+      "jest"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2017,
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended"
+    ]
+  }
+}
+
