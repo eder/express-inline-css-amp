@@ -1,5 +1,5 @@
 # express-inline-css-amp
-> :zap: Express middleware to generate inline rendering CSS to AMP:
+> :zap: Express middleware to generate inline rendering CSS for AMP:
 ```html
 <!doctype html>
 <html ⚡>
