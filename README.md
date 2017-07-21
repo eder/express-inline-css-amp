@@ -1,5 +1,7 @@
+
 # express-inline-css-amp
-> :zap: Express middleware to generate inline rendering CSS to AMP:
+[![CircleCI](https://circleci.com/gh/eder/express-inline-css-amp/tree/master.svg?style=svg&circle-token=4bbaf0984d2072700bf57071ee2379bc2851d1be)](https://circleci.com/gh/eder/express-inline-css-amp/tree/master)
+> :zap: Express middleware to generate inline rendering CSS for AMP:
 ```html
 <!doctype html>
 <html ⚡>
@@ -28,8 +30,7 @@ import inlineCSSAMP from 'express-inline-css-amp';
 const app = express();
 
 app.use(inlineCSSAMP({
-  CSSFilePath: path.join(__dirname,'../public/assets/css/style.css'),
-  CCSMinify: true,
+  CSSFilePath: path.join(__dirname,'../public/assets/css/style.css')
 }));
 
 
@@ -40,7 +41,7 @@ app.get('/', (req, res) => {
 ```
 
 - `CSSFilePath`: Path of the final css file where rules are taken out.
-- `CCSMinify` (optional): This brings up the possibility of mifying the css file.
+- `CCSMinify`:  Default is true, this brings up the possibility of mifying the css file.
 
 ## License
 

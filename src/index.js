@@ -1,41 +1,39 @@
-import fs from 'fs';
-import uglifycss from 'uglifycss';
+import sass from 'node-sass';
 
 export class InlineCSSAMP {
   constructor({CSSFilePath, CSSMinify = true}) {
     this.CSSFilePath = CSSFilePath;
     this.CSSMinify = CSSMinify;
-  
   }
-  
+
+  verify() {
+    if (!this.CSSFilePath) {
+      throw "You need add a file in CSSFilePath param";
+      return
+   }
+  }
+
   readCSS() {
+    this.verify();
+
+    let options = {
+      file: this.CSSFilePath
+    }
+
+   options.outputStyle = this.CSSMinify ? 'compressed' : '';
+
     return new Promise((resolve, reject) => {
+
       try {
-        fs.readFile(this.CSSFilePath, 'utf8', (err, file) => {
-          return resolve(file)
-        }) 
+        sass.render(options, (err, result) => {
+          resolve(result.css.toString())
+        });
       }
       catch(err) {
         throw err
         return reject(err)
       }
     })
-  }
-
-  minifyCSS () {
-    if (!this.CSSFilePath) {
-      throw "You need add a file in CSSFilePath param";
-      return
-    }
-    
-    try {
-      return uglifycss.processFiles([this.CSSFilePath]);
-    }
-    
-    catch(err) {
-      console.trace(err);
-      return err;
-    }
   }
 
   sendCSSContent() {
@@ -49,10 +47,11 @@ export class InlineCSSAMP {
     })
   }
 
-  tagStyle(data) {
-    return `<style amp-custom>${data}</style> </head>`
+  tagStyle(html, content) {
+    const er = /(<\/head>)/i;
+    if (!er.test(html)) return html;
+    return html.replace(er, `<style amp-custom>${content}</style>$1`);
   }
-
 }
 
 const inlineCSSAMP = object => {
@@ -61,7 +60,7 @@ const inlineCSSAMP = object => {
     const renderCallback = function(callback)  {
       return function (err, html) {
         inlinecss.sendCSSContent().then(content => {
-          res.send(html.replace(/(<\/head>)/i, inlinecss.tagStyle(content))); 
+          res.send(inlinecss.tagStyle(html,content));
         })
       }
     }

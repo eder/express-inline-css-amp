@@ -1,12 +1,14 @@
 {
   "name": "express-inline-css-amp",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Express inline css generator to AMP",
   "main": "index.js",
   "scripts": {
     "prestart": "npm run -s build",
     "build": "babel src -d lib",
-    "test": "jest --watch"
+    "test": "jest",
+    "tw": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,7 @@
   "homepage": "https://github.com/eder/express-inline-css-amp#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "uglifycss": "0.0.27"
+    "node-sass": "^4.5.3"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -69,4 +71,3 @@
     ]
   }
 }
-
