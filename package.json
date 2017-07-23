@@ -1,12 +1,13 @@
 {
   "name": "express-inline-css-amp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express inline css generator to AMP",
   "main": "index.js",
   "scripts": {
     "prestart": "npm run -s build",
     "build": "babel src -d lib",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",

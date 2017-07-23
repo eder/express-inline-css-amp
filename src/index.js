@@ -49,10 +49,11 @@ export class InlineCSSAMP {
     })
   }
 
-  tagStyle(data) {
-    return `<style amp-custom>${data}</style> </head>`
+  tagStyle(html, content) {
+    const er = /(<\/head>)/i;
+    if (!er.test(html)) return html;
+    return html.replace(er, `<style amp-custom>${content}</style>$1`);
   }
-
 }
 
 const inlineCSSAMP = object => {
@@ -61,7 +62,7 @@ const inlineCSSAMP = object => {
     const renderCallback = function(callback)  {
       return function (err, html) {
         inlinecss.sendCSSContent().then(content => {
-          res.send(html.replace(/(<\/head>)/i, inlinecss.tagStyle(content))); 
+          res.send(inlinecss.tagStyle(html,content));
         })
       }
     }
