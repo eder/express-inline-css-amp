@@ -17,10 +17,10 @@ export class InlineCSSAMP {
     this.verify();
 
     let options = {
-      file: this.CSSFilePath
-    }
+      file: this.CSSFilePath,
+      outputStyle: this.CSSMinify ? 'compressed' : '',
 
-   options.outputStyle = this.CSSMinify ? 'compressed' : '';
+    }
 
     return new Promise((resolve, reject) => {
 
@@ -36,17 +36,6 @@ export class InlineCSSAMP {
     })
   }
 
-  sendCSSContent() {
-    return new Promise((resolve, reject) => {
-      if (!this.CSSMinify) {
-        this.readCSS().then(data => {
-          return resolve(data);
-        });
-      }
-      return resolve(this.minifyCSS())
-    })
-  }
-
   tagStyle(html, content) {
     const er = /(<\/head>)/i;
     if (!er.test(html)) return html;
@@ -59,7 +48,7 @@ const inlineCSSAMP = object => {
   const render = (req, res, next) => {
     const renderCallback = function(callback)  {
       return function (err, html) {
-        inlinecss.sendCSSContent().then(content => {
+        inlinecss.readCSS().then(content => {
           res.send(inlinecss.tagStyle(html,content));
         })
       }
