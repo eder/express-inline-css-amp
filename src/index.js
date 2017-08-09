@@ -9,7 +9,6 @@ export class InlineCSSAMP {
   verify() {
     if (!this.CSSFilePath) {
       throw "You need add a file in CSSFilePath param";
-      return
    }
   }
 
@@ -26,12 +25,15 @@ export class InlineCSSAMP {
 
       try {
         sass.render(options, (err, result) => {
+          if(err) {
+            console.error(err);
+            return reject(err);
+          }
           resolve(result.css.toString())
         });
       }
       catch(err) {
         throw err
-        return reject(err)
       }
     })
   }
@@ -46,7 +48,7 @@ export class InlineCSSAMP {
 const inlineCSSAMP = object => {
   const inlinecss = new InlineCSSAMP(object);
   const render = (req, res, next) => {
-    const renderCallback = function(callback)  {
+    const renderCallback = function()  {
       return function (err, html) {
         inlinecss.readCSS().then(content => {
           res.send(inlinecss.tagStyle(html,content));

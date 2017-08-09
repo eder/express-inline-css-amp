@@ -1,6 +1,6 @@
 {
   "name": "express-inline-css-amp",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Express inline css generator to AMP",
   "main": "index.js",
   "scripts": {
