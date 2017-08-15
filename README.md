@@ -23,7 +23,7 @@
 ## Preview
 ```js
 // The render method
-import from path;
+import path from 'path';
 import express from 'express';
 import inlineCSSAMP from 'express-inline-css-amp';
 
