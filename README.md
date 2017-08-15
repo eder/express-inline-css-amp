@@ -23,16 +23,15 @@
 ## Preview
 ```js
 // The render method
-
+import from path
 import express from 'express';
 import inlineCSSAMP from 'express-inline-css-amp';
 
 const app = express();
 
 app.use(inlineCSSAMP({
-  CSSFilePath: path.join(__dirname,'../public/assets/css/style.css')
+  CSSFilePath: path.join(__dirname,'../public/assets/css/style.scss') // Yes its works with css, scss our sass \o/
 }));
-
 
 app.get('/', (req, res) => {
   res.render('index', {});
