@@ -28,7 +28,7 @@ import express from 'express';
 import inlineCSSAMP from 'express-inline-css-amp';
 
 const app = express();
-// Yes its works with css, scss our sass \o/
+// Yes its works with css, scss and sass \o/
 app.use(inlineCSSAMP({
   CSSFilePath: path.join(__dirname,'../public/assets/css/style.scss')
 }));
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
 ```
--  Yes its works with css, scss our sass \o/.
+-  Yes its works with css, scss and sass \o/.
 - `CSSFilePath`: Path of the final css file where rules are taken out.
 - `CCSMinify`:  Default is true, this brings up the possibility of mifying the css file.
 
