@@ -1,9 +1,19 @@
+import fs from 'fs';
 import sass from 'node-sass';
 
+const NODE_ENV = process.env.NODE_ENV;
+
 export class InlineCSSAMP {
-  constructor({CSSFilePath, CSSMinify = true}) {
+  constructor({
+    CSSFilePath,
+    CSSMinify = true,
+    outFile,
+    version,
+  }) {
     this.CSSFilePath = CSSFilePath;
     this.CSSMinify = CSSMinify;
+    this.outFile = outFile || `/tmp/generate-by-express-inline-css-amp-${version}.css`;
+    this.version = version;
   }
 
   verify() {
@@ -12,17 +22,15 @@ export class InlineCSSAMP {
    }
   }
 
-  readCSS() {
+  generateCSS() {
     this.verify();
-
     let options = {
       file: this.CSSFilePath,
+      outFile: this.outFile,
       outputStyle: this.CSSMinify ? 'compressed' : '',
-
     }
 
     return new Promise((resolve, reject) => {
-
       try {
         sass.render(options, (err, result) => {
           if(err) {
@@ -30,12 +38,31 @@ export class InlineCSSAMP {
             return reject(err);
           }
           resolve(result.css.toString())
+          fs.writeFile(this.outFile, result.css, function(err){
+          });
         });
       }
       catch(err) {
         throw err
       }
     })
+  }
+  readCSS() {
+    return new Promise((resolve, reject) => {
+      try {
+        fs.readFile(this.outFile, 'utf8', (err, file) => {
+          return resolve(file)
+        })
+      }
+      catch(err) {
+        throw err
+      }
+    })
+  }
+
+  run () {
+    if(NODE_ENV != 'development' && fs.existsSync(this.outFile)) return this.readCSS();
+    return this.generateCSS();
   }
 
   tagStyle(html, content) {
@@ -50,7 +77,7 @@ const inlineCSSAMP = object => {
   const render = (req, res, next) => {
     const renderCallback = function()  {
       return function (err, html) {
-        inlinecss.readCSS().then(content => {
+        inlinecss.run().then(content => {
           res.send(inlinecss.tagStyle(html,content));
         })
       }
