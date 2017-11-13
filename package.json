@@ -7,7 +7,7 @@
     "prestart": "npm run -s build",
     "build": "babel src -d lib",
     "test": "jest",
-    "tw": "jest --watch",
+    "test:watch": "jest --watch",
     "coverage": "jest --coverage"
   },
   "repository": {
@@ -30,10 +30,11 @@
   "homepage": "https://github.com/eder/express-inline-css-amp#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "node-sass": "^4.5.3"
+    "node-sass": "^4.5.3",
+    "babel-cli": "^6.24.1"
+
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.3",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
@@ -43,7 +44,9 @@
     "eslint-watch": "^3.1.2",
     "jest": "^20.0.4",
     "nodemon": "^1.11.0",
-    "regenerator-runtime": "^0.10.5"
+    "regenerator-runtime": "^0.10.5",
+    "hbs": "~4.0.1"
+
   },
   "babel": {
     "presets": [

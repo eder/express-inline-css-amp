@@ -61,7 +61,9 @@ export class InlineCSSAMP {
   }
 
   run () {
-    if(NODE_ENV != 'development' && fs.existsSync(this.outFile)) return this.readCSS();
+    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(this.outFile)) {
+      return this.readCSS();
+    }
     return this.generateCSS();
   }
 
@@ -72,7 +74,7 @@ export class InlineCSSAMP {
   }
 }
 
-const inlineCSSAMP = object => {
+module.exports = object => {
   const inlinecss = new InlineCSSAMP(object);
   const render = (req, res, next) => {
     const renderCallback = function()  {
@@ -94,6 +96,3 @@ const inlineCSSAMP = object => {
   return render;
 
 }
-
-
-export default inlineCSSAMP;
