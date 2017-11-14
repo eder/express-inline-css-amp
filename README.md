@@ -7,12 +7,23 @@
 <html ⚡>
   <head>
     <title>Exemple</title>
+  </head>
+</html>
+```
+
+### Generated
+```html
+<!doctype html>
+<html ⚡>
+  <head>
+    <title>Exemple</title>
     <style amp-custom>
       ...
     </style>
   </head>
 </html>
 ```
+
 
 ## Installation
 
