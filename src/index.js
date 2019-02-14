@@ -5,15 +5,19 @@ const NODE_ENV = process.env.NODE_ENV;
 
 export class InlineCSSAMP {
   constructor({
+    CSSPathBase,
     CSSFilePath,
     CSSMinify = true,
+    fileByRoutes,
     outFile,
     version,
   }) {
     this.CSSFilePath = CSSFilePath;
     this.CSSMinify = CSSMinify;
+    this.CSSPathBase = CSSPathBase;
     this.outFile = outFile || `/tmp/generate-by-express-inline-css-amp-${version}.css`;
     this.version = version;
+    this.fileByRoutes = fileByRoutes;
   }
 
   verify() {
@@ -22,7 +26,7 @@ export class InlineCSSAMP {
    }
   }
 
-  generateCSS() {
+  generateCSS(byRoutes) {
     this.verify();
     let options = {
       file: this.CSSFilePath,
@@ -47,6 +51,7 @@ export class InlineCSSAMP {
       }
     })
   }
+  
   readCSS() {
     return new Promise((resolve, reject) => {
       try {
@@ -59,12 +64,19 @@ export class InlineCSSAMP {
       }
     })
   }
+  
+  generateCSSByRoutes() {
+    this.fileByRoutes.map(route => {
+      this.outFile = `${this.CSSPathBase}${route}`;
+      this.CSSFilePath =  `${this.CSSPathBase}${route}`;
+    });
+  }
 
-  run () {
+  run (view) {
     if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(this.outFile)) {
       return this.readCSS();
     }
-    return this.generateCSS();
+    this.generateCSSByRoutes();
   }
 
   tagStyle(html, content) {
@@ -77,9 +89,10 @@ export class InlineCSSAMP {
 module.exports = object => {
   const inlinecss = new InlineCSSAMP(object);
   const render = (req, res, next) => {
-    const renderCallback = function()  {
+    const renderCallback = function(view)  {
+     
       return function (err, html) {
-        inlinecss.run().then(content => {
+        inlinecss.run(view).then(content => {
           res.send(inlinecss.tagStyle(html,content));
         })
       }
@@ -87,7 +100,7 @@ module.exports = object => {
 
     res.Render = res.render
     res.render = function (view, renders, callback) {
-      this.Render(view, renders, renderCallback(callback))
+      this.Render(view, renders, renderCallback(view))
     }
 
     return next()
@@ -96,3 +109,4 @@ module.exports = object => {
   return render;
 
 }
+

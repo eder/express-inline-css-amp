@@ -32,7 +32,6 @@
     "express": "^4.15.3",
     "node-sass": "^4.5.3",
     "babel-cli": "^6.24.1"
-
   },
   "devDependencies": {
     "babel-jest": "^20.0.3",
@@ -46,7 +45,6 @@
     "nodemon": "^1.11.0",
     "regenerator-runtime": "^0.10.5",
     "hbs": "~4.0.1"
-
   },
   "babel": {
     "presets": [
