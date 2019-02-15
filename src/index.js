@@ -8,7 +8,6 @@ export class InlineCSSAMP {
     CSSPathBase,
     CSSFilePath,
     CSSMinify = true,
-    fileByRoutes,
     outFile,
     version,
   }) {
@@ -17,7 +16,7 @@ export class InlineCSSAMP {
     this.CSSPathBase = CSSPathBase;
     this.outFile = outFile || `/tmp/generate-by-express-inline-css-amp-${version}.css`;
     this.version = version;
-    this.fileByRoutes = fileByRoutes;
+    this.pathToReadCSS =  this.outFile;
   }
 
   verify() {
@@ -26,11 +25,17 @@ export class InlineCSSAMP {
    }
   }
 
-  generateCSS(view) {
+  async generateCSS(view) {
+    this.pathToReadCSS =  `${this.CSSPathBase}${view}.scss`;
+    const response = await this.readCSS(view);
+    if (response) {
+      this.outFile = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
+      this.CSSFilePath =  `${this.CSSPathBase}${view}.scss`;
+    } else {
+      this.pathToReadCSS = this.outFile;
+    }
+    
     return new Promise((resolve, reject) => {
-      this.fileByRoutes.map(route => {
-        this.outFile = `${this.CSSPathBase}prod/${route}`;
-        this.CSSFilePath =  `${this.CSSPathBase}${route}`;
         let options = {
           file: this.CSSFilePath,
           outFile: this.outFile,
@@ -50,15 +55,13 @@ export class InlineCSSAMP {
           throw err
         }
         resolve();
-      });
     })
   }
   
-  readCSS(view) {
-    console.log(view, 'Route');
+  readCSS() {
     return new Promise((resolve, reject) => {
       try {
-        fs.readFile(`${this.CSSPathBase}prod/${view}.scss`, 'utf8', (err, file) => {
+        fs.readFile(this.pathToReadCSS, 'utf8', (err, file) => {
           return resolve(file)
         })
       }
@@ -69,11 +72,11 @@ export class InlineCSSAMP {
   }
   
   async run (view) {
-    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(`${this.CSSPathBase}prod/${view}.scss`)) {
-      return this.readCSS(view);
+    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(this.pathToReadCSS)) {
+      return this.readCSS();
     }
-    let response = await this.generateCSS(view)
-    return this.readCSS(view);
+    await this.generateCSS(view);
+    return this.readCSS();
 
   }
 
