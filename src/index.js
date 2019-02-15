@@ -26,36 +26,39 @@ export class InlineCSSAMP {
    }
   }
 
-  generateCSS(byRoutes) {
-    this.verify();
-    let options = {
-      file: this.CSSFilePath,
-      outFile: this.outFile,
-      outputStyle: this.CSSMinify ? 'compressed' : '',
-    }
-
+  generateCSS(view) {
     return new Promise((resolve, reject) => {
-      try {
-        sass.render(options, (err, result) => {
-          if(err) {
-            console.error(err);
-            return reject(err);
-          }
-          resolve(result.css.toString())
-          fs.writeFile(this.outFile, result.css, function(err){
+      this.fileByRoutes.map(route => {
+        this.outFile = `${this.CSSPathBase}prod/${route}`;
+        this.CSSFilePath =  `${this.CSSPathBase}${route}`;
+        let options = {
+          file: this.CSSFilePath,
+          outFile: this.outFile,
+          outputStyle: this.CSSMinify ? 'compressed' : '',
+        }
+        try {
+          sass.render(options, (err, result) => {
+            if(err) {
+              console.error(err);
+              return reject(err);
+            }
+            fs.writeFile(this.outFile, result.css, function(err){
+            });
           });
-        });
-      }
-      catch(err) {
-        throw err
-      }
+        }
+        catch(err) {
+          throw err
+        }
+        resolve();
+      });
     })
   }
   
-  readCSS() {
+  readCSS(view) {
+    console.log(view, 'Route');
     return new Promise((resolve, reject) => {
       try {
-        fs.readFile(this.outFile, 'utf8', (err, file) => {
+        fs.readFile(`${this.CSSPathBase}prod/${view}.scss`, 'utf8', (err, file) => {
           return resolve(file)
         })
       }
@@ -65,18 +68,13 @@ export class InlineCSSAMP {
     })
   }
   
-  generateCSSByRoutes() {
-    this.fileByRoutes.map(route => {
-      this.outFile = `${this.CSSPathBase}${route}`;
-      this.CSSFilePath =  `${this.CSSPathBase}${route}`;
-    });
-  }
-
-  run (view) {
-    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(this.outFile)) {
-      return this.readCSS();
+  async run (view) {
+    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(`${this.CSSPathBase}prod/${view}.scss`)) {
+      return this.readCSS(view);
     }
-    this.generateCSSByRoutes();
+    let response = await this.generateCSS(view)
+    return this.readCSS(view);
+
   }
 
   tagStyle(html, content) {

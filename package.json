@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "npm run -s build",
-    "build": "babel src -d lib",
+    "build": "babel src -s -d lib",
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage"
@@ -31,7 +31,13 @@
   "dependencies": {
     "express": "^4.15.3",
     "node-sass": "^4.5.3",
-    "babel-cli": "^6.24.1"
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0"
   },
   "devDependencies": {
     "babel-jest": "^20.0.3",
