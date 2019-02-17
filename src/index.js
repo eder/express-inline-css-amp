@@ -41,7 +41,6 @@ export class InlineCSSAMP {
       }
       
       if (NODE_ENV != 'development') {
-        console.log('Production');
         if (fs.existsSync(this.outFileTemp) && fs.existsSync(this.CSSOutDefault)) {
           return  resolve();
         } else {
@@ -80,7 +79,6 @@ export class InlineCSSAMP {
       }
     })
   }
-  
   async run (view) {
     await this.generateCSS(view);
     return this.readCSS();
@@ -112,8 +110,6 @@ module.exports = object => {
 
     return next()
   }
-
   return render;
-
 }
 
