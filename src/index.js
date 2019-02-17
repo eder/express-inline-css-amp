@@ -11,50 +11,60 @@ export class InlineCSSAMP {
     outFile,
     version,
   }) {
+    this.CSSOutDefault = `/tmp/generate-by-express-inline-css-amp-${version}.css`;
     this.CSSFilePath = CSSFilePath;
     this.CSSMinify = CSSMinify;
     this.CSSPathBase = CSSPathBase;
-    this.outFile = outFile || `/tmp/generate-by-express-inline-css-amp-${version}.css`;
+    this.outFile = outFile || this.CSSOutDefault
     this.version = version;
     this.pathToReadCSS =  this.outFile;
   }
 
-  verify() {
-    if (!this.CSSFilePath) {
-      throw "You need add a file in CSSFilePath param";
-   }
-  }
-
   async generateCSS(view) {
-    this.pathToReadCSS =  `${this.CSSPathBase}${view}.scss`;
-    const response = await this.readCSS(view);
+    this.pathToReadCSS = `${this.CSSPathBase}${view}.scss`;
+    const response = fs.existsSync(`${this.CSSPathBase}${view}.scss`)
     if (response) {
-      this.outFile = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
-      this.CSSFilePath =  `${this.CSSPathBase}${view}.scss`;
+      this.outFileTemp = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
+      this.CSSFilePathTemp = this.pathToReadCSS;
     } else {
+      this.CSSFilePathTemp = this.CSSFilePath;
       this.pathToReadCSS = this.outFile;
+      this.outFileTemp  = this.outFile;
     }
-    
+
+
     return new Promise((resolve, reject) => {
-        let options = {
-          file: this.CSSFilePath,
-          outFile: this.outFile,
-          outputStyle: this.CSSMinify ? 'compressed' : '',
+      let options = {
+        file: this.CSSFilePathTemp,
+        outFile: this.outFileTemp,
+        outputStyle: this.CSSMinify ? 'compressed' : '',
+      }
+      
+      if (NODE_ENV != 'development') {
+        console.log('Production');
+        if (fs.existsSync(this.outFileTemp) && fs.existsSync(this.CSSOutDefault)) {
+          return  resolve();
+        } else {
+          if(!fs.existsSync(this.CSSFilePathTemp) && fs.existsSync(this.CSSOutDefault)) {
+            return  resolve();
+          }
         }
-        try {
-          sass.render(options, (err, result) => {
-            if(err) {
-              console.error(err);
-              return reject(err);
-            }
-            fs.writeFile(this.outFile, result.css, function(err){
-            });
+      }
+
+      try {
+        sass.render(options, (err, result) => {
+          if(err) {
+            console.error(err);
+            return reject(err);
+          }
+          fs.writeFile(this.outFileTemp, result.css, function(err){
           });
-        }
-        catch(err) {
-          throw err
-        }
-        resolve();
+        });
+      }
+      catch(err) {
+        throw err
+      }
+      resolve();
     })
   }
   
@@ -72,14 +82,10 @@ export class InlineCSSAMP {
   }
   
   async run (view) {
-    if (NODE_ENV && NODE_ENV != 'development' && fs.existsSync(this.pathToReadCSS)) {
-      return this.readCSS();
-    }
     await this.generateCSS(view);
     return this.readCSS();
-
   }
-
+  
   tagStyle(html, content) {
     const er = /(<\/head>)/i;
     if (!er.test(html)) return html;
