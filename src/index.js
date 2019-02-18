@@ -5,7 +5,7 @@ const NODE_ENV = process.env.NODE_ENV;
 
 export class InlineCSSAMP {
   constructor({
-    CSSPathBase,
+    CSSPathBase = '/tmp/',
     CSSFilePath,
     CSSMinify = true,
     outFile,
