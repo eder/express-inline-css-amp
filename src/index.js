@@ -67,10 +67,11 @@ export class InlineCSSAMP {
     })
   }
   
-  readCSS() {
+  readCSS(view) {
+    const file = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
     return new Promise((resolve, reject) => {
       try {
-        fs.readFile(this.pathToReadCSS, 'utf8', (err, file) => {
+        fs.readFile(file, 'utf8', (err, file) => {
           return resolve(file)
         })
       }
@@ -81,7 +82,7 @@ export class InlineCSSAMP {
   }
   async run (view) {
     await this.generateCSS(view);
-    return this.readCSS();
+    return this.readCSS(view);
   }
   
   tagStyle(html, content) {
