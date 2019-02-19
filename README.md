@@ -51,8 +51,10 @@ app.get('/', (req, res) => {
 });
 
 ```
--  Yes its works with css, scss and sass \o/.
-  `CSSPathBase` = This path is set as `/tmp/` by default used to load css by `view`,
+-  Yes its works with css, scss and sass \o/ and load css by `view` 
+   eg. the view `home` load `home.css` if one exists.
+
+- `CSSPathBase`: This path is set as `/tmp/` by default used to load css compiled;
 - `CSSFilePath`: Path of the final css file where rules are taken out.
 - `CCSMinify`:  Default is true, this brings up the possibility of mifying the css file.
 - `version`:  value - Now, we can cache from css generated automatically just in production 

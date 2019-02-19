@@ -42,6 +42,7 @@ export class InlineCSSAMP {
       
       if (NODE_ENV != 'development') {
         if (fs.existsSync(this.outFileTemp) && fs.existsSync(this.CSSOutDefault)) {
+
           return  resolve();
         } else {
           if(!fs.existsSync(this.CSSFilePathTemp) && fs.existsSync(this.CSSOutDefault)) {
@@ -56,6 +57,7 @@ export class InlineCSSAMP {
             console.error(err);
             return reject(err);
           }
+
           fs.writeFile(this.outFileTemp, result.css, function(err){
           });
         });
@@ -68,7 +70,8 @@ export class InlineCSSAMP {
   }
   
   readCSS(view) {
-    const file = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
+    const viewFile = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
+    const file = fs.existsSync(viewFile) ? viewFile : this.CSSOutDefault;
     return new Promise((resolve, reject) => {
       try {
         fs.readFile(file, 'utf8', (err, file) => {
