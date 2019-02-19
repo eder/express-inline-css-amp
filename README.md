@@ -41,6 +41,7 @@ import inlineCSSAMP from 'express-inline-css-amp';
 const app = express();
 // Yes its works with css, scss and sass \o/
 app.use(inlineCSSAMP({
+  CSSPathBase: path.join(__dirname,'../public/assets/css/'),
   CSSFilePath: path.join(__dirname,'../public/assets/css/style.scss'),
   version: new Date().getTime(),
 }));
@@ -51,6 +52,7 @@ app.get('/', (req, res) => {
 
 ```
 -  Yes its works with css, scss and sass \o/.
+  `CSSPathBase` = This path is set as `/tmp/` by default used to load css by `view`,
 - `CSSFilePath`: Path of the final css file where rules are taken out.
 - `CCSMinify`:  Default is true, this brings up the possibility of mifying the css file.
 - `version`:  value - Now, we can cache from css generated automatically just in production 
