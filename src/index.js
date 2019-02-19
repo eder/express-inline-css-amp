@@ -72,7 +72,6 @@ export class InlineCSSAMP {
   readCSS(view) {
     const viewFile = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
     const file = fs.existsSync(viewFile) ? viewFile : this.CSSOutDefault;
-
     return new Promise((resolve, reject) => {
       try {
         fs.readFile(file, 'utf8', (err, file) => {
