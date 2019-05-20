@@ -20,7 +20,7 @@ export class InlineCSSAMP {
     this.pathToReadCSS =  this.outFile;
   }
 
-  async generateCSS(view) {
+  generateCSS(view) {
     this.pathToReadCSS = `${this.CSSPathBase}${view}.scss`;
     const response = fs.existsSync(`${this.CSSPathBase}${view}.scss`)
     if (response) {
@@ -32,43 +32,33 @@ export class InlineCSSAMP {
       this.outFileTemp  = this.outFile;
     }
 
+    let options = {
+      file: this.CSSFilePathTemp,
+      outFile: this.outFileTemp,
+      outputStyle: this.CSSMinify ? 'compressed' : '',
+    }
 
-    return new Promise((resolve, reject) => {
-      let options = {
-        file: this.CSSFilePathTemp,
-        outFile: this.outFileTemp,
-        outputStyle: this.CSSMinify ? 'compressed' : '',
-      }
-      
-      if (NODE_ENV != 'development') {
-        if (fs.existsSync(this.outFileTemp) && fs.existsSync(this.CSSOutDefault)) {
+    if (NODE_ENV != 'development') {
+      if (fs.existsSync(this.outFileTemp) && fs.existsSync(this.CSSOutDefault)) {
 
-          return  resolve();
-        } else {
-          if(!fs.existsSync(this.CSSFilePathTemp) && fs.existsSync(this.CSSOutDefault)) {
-            return  resolve();
-          }
+        return ;
+      } else {
+        if(!fs.existsSync(this.CSSFilePathTemp) && fs.existsSync(this.CSSOutDefault)) {
+          return ;
         }
       }
+    }
 
-      try {
-        sass.render(options, (err, result) => {
-          if(err) {
-            console.error(err);
-            return reject(err);
-          }
-
-          fs.writeFile(this.outFileTemp, result.css, function(err){
-          });
-        });
-      }
-      catch(err) {
-        throw err
-      }
-      resolve();
-    })
+    try {
+      const result = sass.renderSync(options)
+      fs.writeFileSync(this.outFileTemp, result.css, function(err){
+      });
+    }
+    catch(err) {
+      throw err
+    }
   }
-  
+
   readCSS(view) {
     const viewFile = `/tmp/generate-by-express-inline-css-amp-${this.version}-${view}.scss`;
     const file = fs.existsSync(viewFile) ? viewFile : this.CSSOutDefault;
@@ -84,10 +74,10 @@ export class InlineCSSAMP {
     })
   }
   async run (view) {
-    await this.generateCSS(view);
+    this.generateCSS(view);
     return this.readCSS(view);
   }
-  
+
   tagStyle(html, content) {
     const er = /(<\/head>)/i;
     if (!er.test(html)) return html;
@@ -99,7 +89,6 @@ module.exports = object => {
   const inlinecss = new InlineCSSAMP(object);
   const render = (req, res, next) => {
     const renderCallback = function(view)  {
-     
       return function (err, html) {
         inlinecss.run(view).then(content => {
           res.send(inlinecss.tagStyle(html,content));
@@ -116,4 +105,3 @@ module.exports = object => {
   }
   return render;
 }
-
